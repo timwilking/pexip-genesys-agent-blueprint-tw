@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Create a Session</title>
+  <link rel="stylesheet" type="text/css" href="./styles/base.css">
+</head>
+
+<body>
+
+  <div class="form">
+    <button id="submit" class="submit" type="submit" onclick="return init_test_session();">Initiate Test Session</button>
+  </div>
+
+  <script type="text/javascript">
+    let init_test_session = () => {
+      let sessionWindow = window.open();
+      let xhr = new XMLHttpRequest();
+      xhr.addEventListener("load", (evt) => {
+        let person = JSON.parse(evt.target.response).results[0];
+        let sessionId = window.crypto.randomUUID().replaceAll("-", "");
+        let patientName = person.name.first[0] + person.name.last.replaceAll(" ", "-");
+        let patientId = `${person.name.last[0].toUpperCase()}${Math.floor(Math.random() * 100000000)}`;
+        let url = `https://xmb-hc.pex-gcc.com/webapp/#/?conference=hcp${sessionId}&name=${patientName}%20${patientId}&callType=video&role=host&pin=2021`;
+        console.log(url);
+        sessionWindow.location = url;
+      });
+      xhr.open("GET", "https://randomuser.me/api/?nat=us,gb");
+      xhr.send();
+    }
+  </script>
+</body>
+</html>

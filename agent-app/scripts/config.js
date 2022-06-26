@@ -1,19 +1,36 @@
 export default {
-    clientID: 'bde46253-e5e1-43b4-bc8f-35711b3c41d1',
+    // 'development' or 'production'
+    environment: 'development',
 
-    testUri: 'http://localhost:8080',
-    prodUri:  'https://pexip.github.io/pexip-genesys-agent-blueprint/agent-app/',
+    // Using local test servers
+    developmentUri: 'http://localhost:8080',
 
-    genesysCloud: {
+    // Publicly accessible location where the admin-app files are hosted.
+    // This is different than the Pexip conference node value below.
+    prodUri:  'https://pexip-agent-app.example.com/path/to/app',
+
+    // Id for the video DOM element. Only change this if you customize index.html.
+    videoElementId: "pexip-video-container",
+
+    genesys: {
         // Genesys Cloud region
-        // eg. 'mypurecloud.ie', 'euw2.pure.cloud', etc...
-        region: 'usw2.pure.cloud'
+        // 'mypurecloud.com', 'usw2.pure.cloud', 'mypurecloud.ie', 'euw2.pure.cloud', 'mypurecloud.com.au'
+        // See https://help.mypurecloud.com/articles/aws-regions-for-genesys-cloud-deployment/ for all options
+        region: 'mypurecloud.com',
+
+        // OAuth Client ID
+        // Created in "Create a Token Implicit OAuth Grant for Genesys Cloud deployment" step
+        oauthClientID: '1111111a-1bc1-11bb-a1bb-1b1bb111ca11'
     },
 
     pexip: {
-        conferencePrefix: "mp",
-        conferenceNode: "pex-gcc.com",
-        conferencePin: "2021",
-        videoElementId: "pexip-video-container"
+        // Used to identify the conference attendee for proper handling by Pexip Infinity local policy.
+        conferencePrefix: "xyz",
+
+        // External domain for Pexip Infinity Edge/Transcoding nodes.
+        conferenceNode: "pexip.example.com",
+
+        // Conference PIN. Must match the PIN number set by Pexip Infinity local policy for ad-hoc conference creation.
+        conferencePin: "1234"
     }
 }

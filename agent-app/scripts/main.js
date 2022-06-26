@@ -13,7 +13,7 @@ const conversationsApi = new platformClient.ConversationsApi();
 // Client App
 let ClientApp = window.purecloud.apps.ClientApp;
 let clientApp = new ClientApp({
-    pcEnvironment: config.genesysCloud.region
+    pcEnvironment: config.genesys.region
 });
 
 let conversationId = '';
@@ -22,12 +22,12 @@ let agent = null;
 const urlParams = new URLSearchParams(window.location.search);
 conversationId = urlParams.get('conversationid');
 
-const redirectUri = (new URL (window.location.href)).hostname == 'localhost' ?
-                config.testUri : config.prodUri;
+const redirectUri = config.environment === 'development' ? 
+                      config.developmentUri : config.prodUri;
 
-client.setEnvironment(config.genesysCloud.region);
+client.setEnvironment(config.genesys.region);
 client.loginImplicitGrant(
-    config.clientID,
+    config.genesys.oauthClientID,
     redirectUri,
     { state: conversationId }
 )
@@ -38,7 +38,7 @@ client.loginImplicitGrant(
     agent = currentUser;
     return conversationsApi.getConversation(conversationId);
 }).then((conversation) => {
-    let videoElement = document.getElementById(config.pexip.videoElementId);
+    let videoElement = document.getElementById(config.videoElementId);
     let confNode = config.pexip.conferenceNode;
     let displayName = `Agent: ${agent.name}`;
     let pin = config.pexip.conferencePin;
@@ -59,14 +59,14 @@ client.loginImplicitGrant(
         (callEvent) => {
           let agentParticipant = callEvent?.eventBody?.participants?.filter((p) => p.purpose == "agent")[0];
           if (agentParticipant?.state === "disconnected") {
-            console.info("Agent has ended the call. Disconnecting all conference participants");
+            console.log("Agent has ended the call. Disconnecting all conference participants");
             pexrtcWrapper.disconnectAll();
           }
         });
     });
 
     clientApp.lifecycle.addStopListener(() => {
-      console.info("Application is closing. Cleaning up resources.");
+      console.log("Application is closing. Cleaning up resources.");
       pexrtcWrapper.disconnectAll();
     }, true);
 
